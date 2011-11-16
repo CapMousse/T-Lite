@@ -51,7 +51,7 @@ tlite('{if age != 60 }Hello {name} !{else}Hello old men !{/if}', { name: false, 
 For automatically made a loop thought a given array/object. For give a key and value var to simply use result :
 
 ```javascript
-tlite('{for loop}{key}:{value}<br>{/for}', {loop:['First', 'Second, 'Third']});
+tlite('{for loop}{key}:{value}<br>{/for}', {loop:['First', 'Second', 'Third']});
 tlite('{for loop}{key}:{value}<br>{/for}', {loop:{name: 'Paul', age: 24, city: 'Paris'}});
 ```
 
