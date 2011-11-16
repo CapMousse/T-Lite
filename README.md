@@ -19,21 +19,18 @@ A template can contain multiple var. It can contain condition (if/else) and for 
 ### Condition
 Condition can check if a var exists on the object, check the equality... Functions can be used in *if* statement :
 
-* simple if
-
+####Simple if
 
     tlite('{if name}Hello {name}{/if}', { name: 'Mousse' });
 
-* simple if/else
-
+####Simple if/else
 
     // boolean var
     tlite('{if name}Hello {name} !{else}Hello unknown !{/if}', { name: false });
     // function var
     tlite('{if name}Hello {name} !{else}Hello unknown !{/if}', { name: function(){ return 'James' });
 
-* complex if/else : a condition can use comparison in this list : `===, ==, !=, <=, >=`
-
+####Complex if/else : a condition can use comparison in this list : `===, ==, !=, <=, >=`
 
     // simple var
     tlite('{if age != 60 }Hello {name} !{else}Hello old men !{/if}', { name: false, age : 21});
