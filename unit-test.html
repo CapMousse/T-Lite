@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Test unitaire tlite.js</title>
+    <script type="text/javascript" src="tlite.js"></script>
+    <meta charset="UTF-8">
+    <style>
+        /*.bloc{ display: none; }*/
+        h1:hover{cursor: pointer;}
+        h1:hover + .bloc, .bloc:hover{ display: block }
+    </style>
+</head>
+<body>
+    <h1>tlite simple</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>Ceci est une phrase parsé par tlite version {version}</code>
+        <div>Object de test : </div>
+        <code>{version: 0.1}</code>
+        <div>Résultat attendut :</div>
+        <code>Ceci est une phrase parsé par tlite version 0.1</code>
+        <div>Résultat : </div>
+        <div id="test1"></div>
+        <script type="text/javascript">
+            document.getElementById("test1").innerHTML = tlite('Ceci est une phrase parsé par tlite version {version}', {version: 0.1});
+        </script>
+    </div>
+    <h1>tlite fonction</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>Ceci est une phrase parsé par un tlite contenant une {fonction}</code>
+        <div>Object de test : </div>
+        <code>{fonction: function(){ alert('test'); return 'function';}}</code>
+        <div>Résultat attendut :</div>
+        <code>Ceci est une phrase parsé par un tlite contenant une function</code>
+        <div>Résultat : </div>
+        <div id="test6"></div>
+        <script type="text/javascript">
+            document.getElementById("test6").innerHTML = tlite('Ceci est une phrase parsé par un tlite contenant une {fonction}', {fonction: function(){ return 'function';}});
+        </script>
+    </div>
+    <h1>If simple</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{if result == 2}<br>Test ok<br>{/if}</code>
+        <div>Object de test : </div>
+        <code>{result: 2}</code>
+        <div>Résultat attendut :</div>
+        <code>Test ok</code>
+        <div>Résultat : </div>
+        <div id="test2"></div>
+        <script type="text/javascript">
+            document.getElementById("test2").innerHTML = tlite('{if result == 2}Test ok{/if}', {result: 2});
+        </script>
+    </div>
+    <h1>If avec fonction</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{if callback == 2}<br>Test ok<br>{/if}</code>
+        <div>Object de test : </div>
+        <code>{result: function(){return 3}}</code>
+        <div>Résultat attendut :</div>
+        <code>null</code>
+        <div>Résultat : </div>
+        <div id="test7"></div>
+        <script type="text/javascript">
+            document.getElementById("test7").innerHTML = tlite('{if callback == 2}Test ok{/if}', {callback: function(){return 3}});
+        </script>
+    </div>
+    <h1>Else simple</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{if result == 2}<br>Test ok<br>{else}<br>Test non ok<br>{/if}</code>
+        <div>Object de test : </div>
+        <code>{result: 3}</code>
+        <div>Résultat attendut :</div>
+        <code>Test non ok</code>
+        <div>Résultat : </div>
+        <div id="test5"></div>
+        <script type="text/javascript">
+            document.getElementById("test5").innerHTML = tlite('{if result == 2}Test ok{else}Test non ok{/if}', {result: 3});
+        </script>
+    </div>
+    <h1>For sur un tableau</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{for elements}<br>{key} : {value},<br>{/for}</code>
+        <div>Object de test : </div>
+        <code>{elements: ['test', 're-test', 're-re-test']}</code>
+        <div>Résultat attendut :</div>
+        <code>0 : test, 1 : re-test, 2 : re-re-test,</code>
+        <div>Résultat : </div>
+        <div id="test3"></div>
+        <script type="text/javascript">
+            document.getElementById("test3").innerHTML = tlite('{for elements}{key} : {value}, {/for}', {elements: ['test', 're-test', 're-re-test']});
+        </script>
+    </div>
+    <h1>For sur un objet</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{for elements}<br>{key} : {value},<br>{/for}</code>
+        <div>Object de test : </div>
+        <code>{elements: {name: 'Jean', age: 12, city: 'Paris'}}</code>
+        <div>Résultat attendut :</div>
+        <code>Name: Jean, age : 12, city: Paris</code>
+        <div>Résultat : </div>
+        <div id="test10"></div>
+        <script type="text/javascript">
+            document.getElementById("test10").innerHTML = tlite('{for elements}{key} : {value}, {/for}', {elements: {name: 'Jean', age: 12, city: 'Paris'}});
+        </script>
+    </div>
+    <h1>For sur un tableau d'objet</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{for person}<br>{name} : {age},<br>{/for}</code>
+        <div>Object de test : </div>
+        <code>{person: [{name : 'jeremy', age: '21'}, {name : 'clément', age: '20'}, {name : 'carine', age: '22'}]}</code>
+        <div>Résultat attendut :</div>
+        <code>jeremy : 21, clément: 20, carine : 22,</code>
+        <div>Résultat : </div>
+        <div id="test4"></div>
+        <script type="text/javascript">
+            document.getElementById("test4").innerHTML = tlite('{for person}{name} : {age}, {/for}', {person: [{name : 'jeremy', age: '21'}, {name : 'clément', age: '20'}, {name : 'carine', age: '22'}]});
+        </script>
+    </div>
+    <h1>For sur un tableau contenant une fonction</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{for tableau}{value}&lt;br&gt;{/for}</code>
+        <div>Object de test : </div>
+        <code>{tableau: [function(){return 'test'}, function(){return 2*3}]}</code>
+        <div>Résultat attendut :</div>
+        <code>test<br>6</code>
+        <div>Résultat : </div>
+        <div id="test8"></div>
+        <script type="text/javascript">
+            document.getElementById("test8").innerHTML = tlite('{for tableau}{value}<br>{/for}', {tableau: [function(){return 'test'}, function(){return 2*3}]});
+        </script>
+    </div>
+    <h1>For sur un tableau d'objet contenant une fonction</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{for tableau}{value}&lt;br&gt;{/for}</code>
+        <div>Object de test : </div>
+        <code>{tableau: [{fonction : function(){return 'test'}}, {fonction : function(){return 2*3}}]}</code>
+        <div>Résultat attendut :</div>
+        <code>test<br>6</code>
+        <div>Résultat : </div>
+        <div id="test9"></div>
+        <script type="text/javascript">
+            document.getElementById("test9").innerHTML = tlite('{for tableau}{fonction}<br>{/for}', {tableau: [{fonction : function(){return 'test'}}, {fonction : function(){return 2*3}}]});
+        </script>
+    </div>
+</body>
+</html>

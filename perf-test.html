@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Test unitaire tlite.js</title>
+    <script type="text/javascript" src="tlite.js"></script>
+    <meta charset="UTF-8">
+    <style>
+        /*.bloc{ display: none; }*/
+        h1:hover{cursor: pointer;}
+        h1:hover + .bloc{ display: block }
+    </style>
+</head>
+<body>
+    <h1>1000 tlite simple</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>Ceci est une phrase parsé par tlite version {version}</code>
+        <div>Object de test : </div>
+        <code>{version: 0.1}</code>
+        <div>Temps de parsing :</div>
+        <div id="time1"></div>
+        <script type="text/javascript">
+            var start = +new Date();
+            for(var i = 0; i < 1000; i++){
+                tlite('Ceci est une phrase parsé par tlite version {version}', {version: 0.1})
+            }
+            document.getElementById("time1").innerHTML = (+new Date() - start) + "ms";
+        </script>
+    </div>
+    <h1>1000 tlite complexe</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{varSimple}, {fonction}, {object.element}, {object.fonction}</code>
+        <div>Object de test : </div>
+        <code>{varSimple: 'test', fonction: function(){return 'test'}, object: {element: 'test', fonction: function(){return 'test'}}}</code>
+        <div>Temps de parsing :</div>
+        <div id="time2"></div>
+        <script type="text/javascript">
+            var start = +new Date();
+            for(var i = 0; i < 1000; i++){
+                tlite('{varSimple}, {fonction}, {object.element}, {object.fonction}', {varSimple: 'test', fonction: function(){return 'test'}, object: {element: 'test', fonction: function(){return 'test'}}})
+            }
+            document.getElementById("time2").innerHTML = (+new Date() - start) + "ms";
+        </script>
+    </div>
+    <h1>1000 if/else</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{if test}test{else}pas test{/if}</code>
+        <div>Object de test : </div>
+        <code>{test: function(){return i%2} }</code>
+        <div>Temps de parsing :</div>
+        <div id="time3"></div>
+        <script type="text/javascript">
+            var start = +new Date();
+            for(var i = 0; i < 1000; i++){
+                tlite('{if test}test{else}pas test{/if}', {test: function(){return i%2} })
+            }
+            document.getElementById("time3").innerHTML = (+new Date() - start) + "ms";
+        </script>
+    </div>
+    <h1>200 for sur tableau de 5 elems</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{for elems}{key} : {value}{/for}</code>
+        <div>Object de test : </div>
+        <code>{elems: ['elem1', 'elem2', 'elem3', 'elem4', 'elem5']}</code>
+        <div>Temps de parsing :</div>
+        <div id="time4"></div>
+        <script type="text/javascript">
+            var start = +new Date();
+            for(var i = 0; i < 1000; i++){
+                tlite('{for elems}{key} : {value}{/for}', {elems: ['elem1', 'elem2']})
+            }
+            document.getElementById("time4").innerHTML = (+new Date() - start) + "ms";
+        </script>
+    </div>
+</body>
+</html>
