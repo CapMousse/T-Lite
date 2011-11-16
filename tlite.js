@@ -1,3 +1,4 @@
+//      Version : 0.3
 //     (c) 2011 Jérémy Barbe.
 //     May be freely distributed under the MIT license.
 
@@ -22,23 +23,24 @@
 
         /**
          * Parse a for loop
-         * @param forVar    the var used for the loop
-         * @param content   content of the loop
+         * @param forVar        the var used for the loop
+         * @param filterString  the var in the loop filtered at render
+         * @param content       content of the loop
          */
-        function parseFor(forVar, content){
+        function parseFor(forVar, filterString, content){
             var i, forReturn = '', result;
 
+            filterString = (filterString || '')+'|value|key';
+
             for(i in forVar){
-                if(!forVar.hasOwnProperty(i)){ continue; }
+                if(forVar.hasOwnProperty(i) && filterString.search(i) == -1){
+                    typeof forVar[i] == "object" ? result = forVar[i] : result = {};
 
-                result = {};
+                    result['value'] = forVar[i];
+                    result['key'] = i;
 
-                if(typeof forVar[i] == "object"){ result = forVar[i] }
-                else{ result['value'] = forVar[i]; }
-
-                result['key'] = i;
-
-                forReturn += parse(content, result);
+                    forReturn += parse(content, result);
+                }
             }
 
             return forReturn;
@@ -73,7 +75,7 @@
          */
         function find(tpl, context){
             //get the current context or the global context
-            context = context || params;
+            context = context || vars;
 
             tpl = tpl.replace(/\{(.+?)\}/g, function(foundVar ,varContent){
                 return findValue(varContent, context);
@@ -88,22 +90,29 @@
          * @param context
          */
         function parse(tpl, context){
-            context = context || params;
+            context = context || vars;
 
-            tpl = tpl.replace(/\{for (.*?)\}(.*)\{\/for\}/, function(string, forVar, tpl){
+            return find(
+                // first, search {for ?}?{/for} and replace result
+                tpl.replace(/\{for (.*?)(\|(.*?))?\}(.*)\{\/for\}/, function(string, forVar, filterString, filter, tpl){
                     forVar = findValue(forVar, context);
-                    return parseFor(forVar, tpl);
+                    return parseFor(forVar, filter, tpl);
                 })
+                // then search condition. If condition rendered before for, included for will be break
+                // this "trick" use more memory but (for are always rendered) but will prevent empty if/else result
                 .replace(/\{if (.*?)\}(.*?)(\{else\}(.*?))?\{\/if\}/, function(string, condition, result, elseString, elseResult){
                     var fn, type;
 
+                    // if we don't have space in the condition, it's a single var/function, just find and call it.
                     if(!condition.match(' ')){
                         return findValue(condition, context) ? parse(result, context) : (elseResult ? parse(elseResult, context) : '');
                     }
 
+                    // else, it's a complex condition, need to parse first and last element
                     condition = condition.split(' ');
                     type = ifType[condition[1]];
 
+                    
                     if(ifCache[type]){
                         fn = ifCache[type];
                     }else{
@@ -115,11 +124,9 @@
                     condition[2] = findValue(condition[2], context);
 
                     return fn(condition[0], condition[2]) ? parse(result, context) : (elseResult ? parse(elseResult, context) : '');
-                });
-
-            tpl = find(tpl, context);
-
-            return tpl;
+                }),
+                context
+            );
         }
 
         return parse(template, vars);

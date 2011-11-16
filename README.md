@@ -36,7 +36,10 @@ tlite('{if name}Hello {name} !{else}Hello unknown !{/if}', { name: false });
 tlite('{if name}Hello {name} !{else}Hello unknown !{/if}', { name: function(){ return 'James' });
 ```
 
-####Complex if/else : a condition can use comparison in this list : `===, ==, !=, <=, >=`
+####Complex if/else
+
+Complex if/else can use comparison char in this list : `===, ==, !=, <=, >=`.
+**spaces are obligatory in your if tempalte ! Condition without space will not work !**
 
 ```javascript
 // simple var
@@ -55,10 +58,23 @@ tlite('{for loop}{key}:{value}<br>{/for}', {loop:['First', 'Second', 'Third']});
 tlite('{for loop}{key}:{value}<br>{/for}', {loop:{name: 'Paul', age: 24, city: 'Paris'}});
 ```
 
+Filter can remove one or multiple var from the current object. Each element you want to filter will be separated by a pipe:
+
+```javascript
+tlite('{for loop|not|that}{key}:{value}<br>{/for}', {loop:{name: 'Paul', age: 24, not: 'Paris', that: 'Test'}});
+```
+
 ## Function
 Function called by tlite will receive a context argument, representing the current parsed element.
 
 ## Versions
+
+#### 0.3
+* Add filter to loops
+
+#### 0.2
+* Fix nested loops not working properly when accessing to the value var
+* Adding documentation
 
 #### 0.1
 * First release

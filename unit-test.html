@@ -151,5 +151,22 @@
             document.getElementById("test9").innerHTML = tlite('{for tableau}{fonction}<br>{/for}', {tableau: [{fonction : function(){return 'test'}}, {fonction : function(){return 2*3}}]});
         </script>
     </div>
+    <h1>For dans un For</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>&lt;ul&gt;{for tableau}&lt;li&gt;{key}&lt;ul&gt;{for value}&lt;li&gt;{key}:{value}&lt;/li&gt;{/for}&lt;/ul&gt;&lt;/li&gt;{/for}&lt;/ul&gt;</code>
+        <div>Object de test : </div>
+        <code>{tableau: { item1 : { sousitem1 : 'Test1', sousitem2 : 'Test2', sousitem2 : 'Test3', sousitem2 : 'Test4' }, item2 : { sousitem1 : 'Test1', sousitem2 : 'Test2', sousitem2 : 'Test3', sousitem2 : 'Test4' }, item3 : { sousitem1 : 'Test1', sousitem2 : 'Test2', sousitem2 : 'Test3', sousitem2 : 'Test4' }}}</code>
+        <div>Résultat attendut :</div>
+        <code>test<br>6</code>
+        <div>Résultat : </div>
+        <div id="test11"></div>
+        <script type="text/javascript">
+            document.getElementById("test11").innerHTML = tlite(
+                    '<ul>{for tableau}<li>{key}<ul>{for value|sousitem2|sousitem1}<li>{key}:{value.name}</li>{/for}</ul></li>{/for}</ul>',
+                    {tableau: { item1 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }, item2 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }, item3 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }}}
+            );
+        </script>
+    </div>
 </body>
 </html>
