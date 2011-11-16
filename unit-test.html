@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Test unitaire tlite.js</title>
-    <script type="text/javascript" src="tlite.js"></script>
+    <script type="text/javascript" src="tlite-min.js"></script>
     <meta charset="UTF-8">
     <style>
         /*.bloc{ display: none; }*/
@@ -158,13 +158,30 @@
         <div>Object de test : </div>
         <code>{tableau: { item1 : { sousitem1 : 'Test1', sousitem2 : 'Test2', sousitem2 : 'Test3', sousitem2 : 'Test4' }, item2 : { sousitem1 : 'Test1', sousitem2 : 'Test2', sousitem2 : 'Test3', sousitem2 : 'Test4' }, item3 : { sousitem1 : 'Test1', sousitem2 : 'Test2', sousitem2 : 'Test3', sousitem2 : 'Test4' }}}</code>
         <div>Résultat attendut :</div>
-        <code>test<br>6</code>
+        <div><ul><li>item1<ul><li>sousitem1:test1</li><li>sousitem2:test2</li><li>sousitem3:test3</li><li>sousitem4:test4</li></ul></li><li>item2<ul><li>sousitem1:test1</li><li>sousitem2:test2</li><li>sousitem3:test3</li><li>sousitem4:test4</li></ul></li><li>item3<ul><li>sousitem1:test1</li><li>sousitem2:test2</li><li>sousitem3:test3</li><li>sousitem4:test4</li></ul></li></ul></div>
         <div>Résultat : </div>
         <div id="test11"></div>
         <script type="text/javascript">
             document.getElementById("test11").innerHTML = tlite(
-                    '<ul>{for tableau}<li>{key}<ul>{for value|sousitem2|sousitem1}<li>{key}:{value.name}</li>{/for}</ul></li>{/for}</ul>',
+                    '<ul>{for tableau}<li>{key}<ul>{for value}<li>{key}:{value.name}</li>{/for}</ul></li>{/for}</ul>',
                     {tableau: { item1 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }, item2 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }, item3 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }}}
+            );
+        </script>
+    </div>
+    <h1>For avec un filtre</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>&lt;ul&gt;{for tableau|elem2|elem4}&lt;li&gt;{key} : {value}&lt;/li&gt;{/for}&lt;/ul&gt;</code>
+        <div>Object de test : </div>
+        <code>{tableau: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}</code>
+        <div>Résultat attendut :</div>
+        <div><ul><li>elem1 : contenu1</li><li>elem3 : contenu 3</li></ul></div>
+        <div>Résultat : </div>
+        <div id="test12"></div>
+        <script type="text/javascript">
+            document.getElementById("test12").innerHTML = tlite(
+                    '<ul>{for tableau|elem2|elem4}<li>{key} : {value}</li>{/for}</ul>',
+                    {tableau: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}
             );
         </script>
     </div>

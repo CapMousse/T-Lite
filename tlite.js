@@ -57,12 +57,12 @@
 
             value = context[path.shift()];
 
-            while(value != undefined && path.length > 0){
+            while(path.length){
                 value = value[path.shift()];
             }
 
-            if(typeof value === "function"){
-                return value.call(this, context);
+            if(value.call){
+                value = value.call(this, context);
             }
 
             return value == undefined ? elem : value;
