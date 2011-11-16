@@ -48,8 +48,6 @@ For automatically made a loop thought a given array/object. For give a key and v
 ## Function
 Function called by tlite will receive a context argument, representing the current parsed element.
 
-- - -
-
 ## Versions
 
 #### 0.1
