@@ -72,6 +72,9 @@ Vars containin a function will receive a context argument, representing the curr
 
 ## Versions
 
+#### 0.6
+* New interactive method, better parsing
+
 #### 0.5
 * Fix loops containing a condition containing a loop not working
 
