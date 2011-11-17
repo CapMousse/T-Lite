@@ -1,4 +1,4 @@
-//      Version : 0.4
+//      Version : 0.5
 //     (c) 2011 Jérémy Barbe.
 //     May be freely distributed under the MIT license.
 
@@ -57,7 +57,7 @@
 
             value = context[path.shift()];
 
-            while(path.length){
+            while(value != undefined && path.length){
                 value = value[path.shift()];
             }
 
@@ -93,13 +93,7 @@
             context = context || vars;
 
             return find(
-                // first, search {for ?}?{/for} and replace result
-                tpl.replace(/\{for (.*?)(\|(.*?))?\}(.*)\{\/for\}/, function(string, forVar, filterString, filter, tpl){
-                    forVar = findValue(forVar, context);
-                    return parseFor(forVar, filter, tpl);
-                })
-                // then search condition. If condition rendered before for, included for will be break
-                // this "trick" use more memory but (for are always rendered) but will prevent empty if/else result
+                tpl
                 .replace(/\{if (.*?)\}(.*?)(\{else\}(.*?))?\{\/if\}/, function(string, condition, result, elseString, elseResult){
                     var type;
 
@@ -112,7 +106,7 @@
                     condition = condition.split(' ');
                     type = ifType[condition[1]];
 
-                    
+
                     if(!ifCache[type]){
                         ifCache[type] = buildCondition("return x "+condition[1]+" y");
                     }
@@ -121,6 +115,11 @@
                     condition[2] = findValue(condition[2], context);
 
                     return ifCache[type](condition[0], condition[2]) ? parse(result, context) : (elseResult ? parse(elseResult, context) : '');
+                })
+                // Parse for
+                .replace(/\{for (.*?)(\|(.*?))?\}(.*)\{\/for\}/, function(string, forVar, filterString, filter, tpl){
+                    forVar = findValue(forVar, context);
+                    return parseFor(forVar, filter, tpl);
                 }),
                 context
             );

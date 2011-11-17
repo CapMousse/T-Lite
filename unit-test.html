@@ -2,12 +2,12 @@
 <html>
 <head>
     <title>Test unitaire tlite.js</title>
-    <script type="text/javascript" src="tlite-min.js"></script>
+    <script type="text/javascript" src="tlite.js"></script>
     <meta charset="UTF-8">
     <style>
-        /*.bloc{ display: none; }
+        .bloc{ display: none; }
         h1:hover{cursor: pointer;}
-        h1:focus + .bloc{ display: block }*/
+        h1:focus + .bloc{ display: block }
     </style>
 </head>
 <body>
@@ -182,6 +182,23 @@
             document.getElementById("test12").innerHTML = tlite(
                     '<ul>{for tableau|elem2|elem4}<li>{key} : {value}</li>{/for}</ul>',
                     {tableau: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}
+            );
+        </script>
+    </div>
+    <h1 tabindex="13">For dans un Else</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{if test}Nothing{else}{for elements|elem1}{key},{/for}{/else}</code>
+        <div>Object de test : </div>
+        <code>{test: false, elements: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}</code>
+        <div>Résultat attendut :</div>
+        <div>elem2,elem3,elem4,</div>
+        <div>Résultat : </div>
+        <div id="test13"></div>
+        <script type="text/javascript">
+            document.getElementById("test13").innerHTML = tlite(
+                    '{if test}{for elements|elem1}{key},{/for}{else}{for elements|elem1}{key},{/for}{/if}',
+                    {test: false, elements: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}
             );
         </script>
     </div>
