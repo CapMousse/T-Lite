@@ -72,6 +72,9 @@ Vars containin a function will receive a context argument, representing the curr
 
 ## Versions
 
+#### 0.7
+* Fix imbriqued if, better parsing
+
 #### 0.6
 * New interactive method, better parsing
 

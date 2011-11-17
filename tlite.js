@@ -1,4 +1,4 @@
-//      Version : 0.6
+//      Version : 0.7
 //     (c) 2011 Jérémy Barbe.
 //     May be freely distributed under the MIT license.
 
@@ -18,21 +18,15 @@
          * @param elem      the elet to search
          * @param context   the current search context
          */
-         function findValue(elem, context){
-            var path = elem.split('.'),
-                value;
-
+         function findValue(elem, context, path, value){
+            path = elem.split('.');
             value = context[path.shift()];
 
             while(value != undefined && path.length){
                 value = value[path.shift()];
             }
 
-            if(value && value.call){
-                value = value.call(this, context);
-            }
-
-            return value == undefined ? elem : value;
+            return value == undefined ? elem : value.call ? value.call(this, context) : value;
         }
 
         /**
@@ -41,28 +35,27 @@
          * @param context       the context to search on
          */
         function find(tpl, context){
-            //get the current context or the global context
-            context = context || vars;
-
-            tpl = tpl.replace(/\{(.+?)\}/g, function(foundVar ,varContent){
-                return findValue(varContent, context);
+            return tpl.replace(/\{(.+?)\}/g, function(foundVar ,varContent){
+                return findValue(varContent, context || vars);
             });
-
-            return tpl;
         }
-        
 
         function parseIf(tpl, context){
-            return tpl.replace(/\{if (.*?)\}(.*?)(\{else\}(.*?))?\{\/if\}/, function(string, condition, result, elseString, elseResult){
-                var type;
+            return tpl.replace(/(\{if (.*?)\}(.*)\{else\}(.*)\{\/if\}|{if (.*?)\}(.*)\{\/if\})/, function(string, placeholder, condition, ifResult, elseResult, smallIfCondition, smallIfResult){
+                var type, conditionStart, conditionEnd;
+
+                condition = condition || smallIfCondition;
+                ifResult = ifResult || smallIfResult;
 
                 // if we don't have space in the condition, it's a single var/function, just find and call it.
                 if(!condition.match(' ')){
-                    return findValue(condition, context) ? parse(result, context) : (elseResult ? parse(elseResult, context) : '');
+                    return findValue(condition, context) ? parse(ifResult, context) : (elseResult ? parse(elseResult, context) : '');
                 }
 
                 // else, it's a complex condition, need to parse first and last element
                 condition = condition.split(' ');
+                conditionStart = findValue(condition[0], context);
+                conditionEnd = findValue(condition[2], context);
                 type = ifType[condition[1]];
 
 
@@ -70,10 +63,7 @@
                     ifCache[type] = buildCondition("return x "+condition[1]+" y");
                 }
 
-                condition[0] = findValue(condition[0], context);
-                condition[2] = findValue(condition[2], context);
-
-                return ifCache[type](condition[0], condition[2]) ? parse(result, context) : (elseResult ? parse(elseResult, context) : '');
+                return ifCache[type](conditionStart, conditionEnd) ? parse(ifResult, context) : (elseResult ? parse(elseResult, context) : '');
             });
         }
 
@@ -88,8 +78,7 @@
 
         function parseFor(tpl, context){
             return tpl.replace(/\{for (.*?)(\|(.*?))?\}(.+)\{\/for\}/, function(string, forVar, filterString, filter, tpl){
-                forVar = findValue(forVar, context);
-                return makeFor(forVar, filter, tpl);
+                return makeFor(findValue(forVar, context), filter, tpl);
             });
         }
 
@@ -99,8 +88,8 @@
          * @param filterString  the var in the loop filtered at render
          * @param content       content of the loop
          */
-        function makeFor(forVar, filterString, content){
-            var i, forReturn = '', result;
+        function makeFor(forVar, filterString, content, i, result){
+            var forReturn = '';
 
             filterString = (filterString || '')+'|value|key';
 
@@ -126,9 +115,9 @@
         function parse(tpl, context){
             var testIf = tpl.search('{if'),
                 testFor = tpl.search('{for');
-            
+
             context = context || vars;
-            
+
             if(testIf < testFor){
                 tpl = parseIf(tpl, context);
                 tpl = parseFor(tpl, context);
