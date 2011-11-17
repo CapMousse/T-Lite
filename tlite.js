@@ -41,9 +41,7 @@
         }
 
         function parseIf(tpl, context){
-            return tpl.replace(/(\{if (.*?)\}(.*)\{else\}(.*)\{\/if\}|{if (.*?)\}(.*)\{\/if\})/, function(string, placeholder, condition, ifResult, elseResult, smallIfCondition, smallIfResult){
-                var type, conditionStart, conditionEnd;
-
+            return tpl.replace(/(\{if (.*?)\}(.*)\{else\}(.*)\{\/if\}|{if (.*?)\}(.*)\{\/if\})/, function(string, type, condition, ifResult, elseResult, smallIfCondition, smallIfResult, conditionStart, conditionEnd){
                 condition = condition || smallIfCondition;
                 ifResult = ifResult || smallIfResult;
 
@@ -94,11 +92,11 @@
             filterString = (filterString || '')+'|value|key';
 
             for(i in forVar){
-                if(forVar.hasOwnProperty(i) && filterString.search(i) == -1){
+                if(forVar.hasOwnProperty(i) && filterString.search(i) < 0){
                     typeof forVar[i] == "object" ? result = forVar[i] : result = {};
 
-                    result['value'] = forVar[i];
-                    result['key'] = i;
+                    result.value = forVar[i];
+                    result.key = i;
 
                     forReturn += parse(content, result);
                 }
@@ -118,13 +116,9 @@
 
             context = context || vars;
 
-            if(testIf < testFor){
-                tpl = parseIf(tpl, context);
-                tpl = parseFor(tpl, context);
-            }else{
-                tpl = parseFor(tpl, context);
-                tpl = parseIf(tpl, context);
-            }
+            testIf < testFor ?
+                tpl = parseFor(parseIf(tpl, context), context):
+                tpl = parseIf(parseFor(tpl, context), context);
 
             return find(tpl, context);
         }
