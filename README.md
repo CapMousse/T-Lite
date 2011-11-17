@@ -72,6 +72,10 @@ Vars containin a function will receive a context argument, representing the curr
 
 ## Versions
 
+#### 0.4
+* Fix broken function call on minified version
+* Clean the code
+
 #### 0.3
 * Add filter to loops
 * Update compression method

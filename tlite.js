@@ -1,4 +1,4 @@
-//      Version : 0.3
+//      Version : 0.4
 //     (c) 2011 Jérémy Barbe.
 //     May be freely distributed under the MIT license.
 
@@ -61,7 +61,7 @@
                 value = value[path.shift()];
             }
 
-            if(value.call){
+            if(value && value.call){
                 value = value.call(this, context);
             }
 
@@ -101,7 +101,7 @@
                 // then search condition. If condition rendered before for, included for will be break
                 // this "trick" use more memory but (for are always rendered) but will prevent empty if/else result
                 .replace(/\{if (.*?)\}(.*?)(\{else\}(.*?))?\{\/if\}/, function(string, condition, result, elseString, elseResult){
-                    var fn, type;
+                    var type;
 
                     // if we don't have space in the condition, it's a single var/function, just find and call it.
                     if(!condition.match(' ')){
@@ -113,17 +113,14 @@
                     type = ifType[condition[1]];
 
                     
-                    if(ifCache[type]){
-                        fn = ifCache[type];
-                    }else{
-                        fn = buildCondition("return x "+condition[1]+" y");
-                        ifCache[type] = fn;
+                    if(!ifCache[type]){
+                        ifCache[type] = buildCondition("return x "+condition[1]+" y");
                     }
 
                     condition[0] = findValue(condition[0], context);
                     condition[2] = findValue(condition[2], context);
 
-                    return fn(condition[0], condition[2]) ? parse(result, context) : (elseResult ? parse(elseResult, context) : '');
+                    return ifCache[type](condition[0], condition[2]) ? parse(result, context) : (elseResult ? parse(elseResult, context) : '');
                 }),
                 context
             );
