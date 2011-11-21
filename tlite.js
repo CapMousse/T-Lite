@@ -1,9 +1,11 @@
-//      Version : 0.7
+//      Version : 0.8
 //     (c) 2011 Jérémy Barbe.
 //     May be freely distributed under the MIT license.
 
 window['tlite'] = function(template, vars){
-    var ifCache = {},
+    var context = vars,
+        elseString = "{else}",
+        ifCache = {},
         ifType = {
             '<=' : 'lw',
             '>=' : 'gt',
@@ -15,9 +17,8 @@ window['tlite'] = function(template, vars){
     /**
      * Find the value asked in the template in the current context
      * @param elem      the elet to search
-     * @param context   the current search context
      */
-     function findValue(elem, context){
+     function findValue(elem){
         var path = elem.split('.'),
             value = context[path.shift()];
 
@@ -31,36 +32,35 @@ window['tlite'] = function(template, vars){
     /**
      * replace template var to their value
      * @param tpl           the template to parse
-     * @param context       the context to search on
      */
-    function find(tpl, context){
+    function find(tpl){
         return tpl.replace(/\{(.+?)\}/g, function(foundVar ,varContent){
-            return findValue(varContent, context || vars);
+            return findValue(varContent);
         });
     }
 
-    function parseIf(tpl, context){
-        return tpl.replace(/(\{if (.*?)\}(.*)\{else\}(.*)\{\/if\}|{if (.*?)\}(.*)\{\/if\})/, function(string, type, condition, ifResult, elseResult, smallIfCondition, smallIfResult, conditionStart, conditionEnd){
-            condition = condition || smallIfCondition;
-            ifResult = ifResult || smallIfResult;
+    function parseIf(tpl){
+        return tpl.replace(/\{if (.*?)\}(.*)\{\/if\}/, function(string, condition, result, elseResult, type){
 
-            // if we don't have space in the condition, it's a single var/function, just find and call it.
-            if(!condition.match(' ')){
-                return findValue(condition, context) ? parse(ifResult, context) : (elseResult ? parse(elseResult, context) : '');
-            }
+            elseResult = result.split(elseString);
+
+            elseResult[1] ?
+               (elseResult = elseResult.pop(), result = result.split(elseString+elseResult)[0]) :
+               elseResult = 0;
 
             // else, it's a complex condition, need to parse first and last element
             condition = condition.split(' ');
-            conditionStart = findValue(condition[0], context);
-            conditionEnd = findValue(condition[2], context);
             type = ifType[condition[1]];
 
 
-            if(!ifCache[type]){
+            if(type && !ifCache[type]){
                 ifCache[type] = buildCondition("return x "+condition[1]+" y");
             }
 
-            return ifCache[type](conditionStart, conditionEnd) ? parse(ifResult, context) : (elseResult ? parse(elseResult, context) : '');
+            type = type ? ifCache[type](findValue(condition[0]), findValue(condition[2])):
+                          findValue(condition[0]);
+
+            return type ? parse(result) : (elseResult ? parse(elseResult) : '')
         });
     }
 
@@ -73,9 +73,9 @@ window['tlite'] = function(template, vars){
     }
 
 
-    function parseFor(tpl, context){
+    function parseFor(tpl){
         return tpl.replace(/\{for (.*?)(\|(.*?))?\}(.+)\{\/for\}/, function(string, forVar, filterString, filter, tpl){
-            return makeFor(findValue(forVar, context), filter, tpl);
+            return makeFor(findValue(forVar), filter, tpl);
         });
     }
 
@@ -97,27 +97,30 @@ window['tlite'] = function(template, vars){
                 result.value = forVar[i];
                 result.key = i;
 
-                forReturn += parse(content, result);
+                context = result;
+                forReturn += parse(content);
             }
         }
-
+        
         return forReturn;
     }
 
     /**
      * Parse the current template to find var/condition/for
      * @param tpl
-     * @param context
      */
-    function parse(tpl, context){
-        context = context || vars;
-
+    function parse(tpl){
+        //preserve current context
+        var curContext = context;
+        
         tpl.search('{if') < tpl.search('{for') ?
-            tpl = parseFor(parseIf(tpl, context), context):
-            tpl = parseIf(parseFor(tpl, context), context);
+            tpl = parseFor(parseIf(tpl)):
+            tpl = parseIf(parseFor(tpl));
 
-        return find(tpl, context);
+        //reset current context
+        context = curContext;
+        return find(tpl);
     }
 
-    return parse(template, vars);
+    return parse(template);
 }

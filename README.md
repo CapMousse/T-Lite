@@ -72,6 +72,10 @@ Vars containin a function will receive a context argument, representing the curr
 
 ## Versions
 
+#### 0.8
+* Improve if/else performances
+* Improve compression
+
 #### 0.7
 * Fix imbriqued if, better parsing
 

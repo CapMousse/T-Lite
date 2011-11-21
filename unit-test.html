@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Test unitaire tlite.js</title>
-    <script type="text/javascript" src="tlite-min.js"></script>
+    <script type="text/javascript" src="tlite.js"></script>
     <meta charset="UTF-8">
     <style>
         .bloc{ display: none; }
@@ -197,8 +197,8 @@
         <div id="test13"></div>
         <script type="text/javascript">
             document.getElementById("test13").innerHTML = tlite(
-                    '{if test}{for elements|elem1}{key},{/for}{else}{for elements|elem1}{key},{/for}{/if}',
-                    {test: false, elements: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}
+                    '{if test}{for elements|elem1}{key},{/for}{else}{for elements|elem1}{key},{/for}{/if} {truc}',
+                    {test: false, elements: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }, truc: 'muche'}
             );
         </script>
     </div>
