@@ -12,6 +12,7 @@ T-Lite work with two methods:
 * Parse : find/replace var and do loops/conditions
 
 Each method take two arguments :
+
 * A template string
 * A var object
 
