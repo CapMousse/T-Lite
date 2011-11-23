@@ -22,7 +22,7 @@
         <div>Résultat : </div>
         <div id="test1"></div>
         <script type="text/javascript">
-            document.getElementById("test1").innerHTML = tlite('Ceci est une phrase parsé par tlite version {version}', {version: 0.1});
+            document.getElementById("test1").innerHTML = Tlite.find('Ceci est une phrase parsé par tlite version {version}', {version: 0.1});
         </script>
     </div>
     <h1 tabindex="2">tlite fonction</h1>
@@ -36,7 +36,7 @@
         <div>Résultat : </div>
         <div id="test6"></div>
         <script type="text/javascript">
-            document.getElementById("test6").innerHTML = tlite('Ceci est une phrase parsé par un tlite contenant une {fonction}', {fonction: function(){ return 'function';}});
+            document.getElementById("test6").innerHTML = Tlite.find('Ceci est une phrase parsé par un tlite contenant une {fonction}', {fonction: function(){ return 'function';}});
         </script>
     </div>
     <h1 tabindex="3">If simple</h1>
@@ -50,7 +50,7 @@
         <div>Résultat : </div>
         <div id="test2"></div>
         <script type="text/javascript">
-            document.getElementById("test2").innerHTML = tlite('{if result == 2}Test ok{/if}', {result: 2});
+            document.getElementById("test2").innerHTML = Tlite.parse('{if result == 2}Test ok{/if}', {result: 2});
         </script>
     </div>
     <h1 tabindex="4">If avec fonction</h1>
@@ -64,7 +64,7 @@
         <div>Résultat : </div>
         <div id="test7"></div>
         <script type="text/javascript">
-            document.getElementById("test7").innerHTML = tlite('{if callback == 2}Test ok{/if}', {callback: function(){return 3}});
+            document.getElementById("test7").innerHTML = Tlite.parse('{if callback == 2}Test ok{/if}', {callback: function(){return 3}});
         </script>
     </div>
     <h1 tabindex="5">Else simple</h1>
@@ -78,7 +78,7 @@
         <div>Résultat : </div>
         <div id="test5"></div>
         <script type="text/javascript">
-            document.getElementById("test5").innerHTML = tlite('{if result == 2}Test ok{else}Test non ok{/if}', {result: 3});
+            document.getElementById("test5").innerHTML = Tlite.parse('{if result == 2}Test ok{else}Test non ok{/if}', {result: 3});
         </script>
     </div>
     <h1 tabindex="6">For sur un tableau</h1>
@@ -92,7 +92,7 @@
         <div>Résultat : </div>
         <div id="test3"></div>
         <script type="text/javascript">
-            document.getElementById("test3").innerHTML = tlite('{for elements}{key} : {value}, {/for}', {elements: ['test', 're-test', 're-re-test']});
+            document.getElementById("test3").innerHTML = Tlite.parse('{for elements}{key} : {value}, {/for}', {elements: ['test', 're-test', 're-re-test']});
         </script>
     </div>
     <h1 tabindex="7">For sur un objet</h1>
@@ -106,7 +106,7 @@
         <div>Résultat : </div>
         <div id="test10"></div>
         <script type="text/javascript">
-            document.getElementById("test10").innerHTML = tlite('{for elements}{key} : {value}, {/for}', {elements: {name: 'Jean', age: 12, city: 'Paris'}});
+            document.getElementById("test10").innerHTML = Tlite.parse('{for elements}{key} : {value}, {/for}', {elements: {name: 'Jean', age: 12, city: 'Paris'}});
         </script>
     </div>
     <h1 tabindex="8">For sur un tableau d'objet</h1>
@@ -120,7 +120,7 @@
         <div>Résultat : </div>
         <div id="test4"></div>
         <script type="text/javascript">
-            document.getElementById("test4").innerHTML = tlite('{for person}{name} : {age}, {/for}', {person: [{name : 'jeremy', age: '21'}, {name : 'clément', age: '20'}, {name : 'carine', age: '22'}]});
+            document.getElementById("test4").innerHTML = Tlite.parse('{for person}{name} : {age}, {/for}', {person: [{name : 'jeremy', age: '21'}, {name : 'clément', age: '20'}, {name : 'carine', age: '22'}]});
         </script>
     </div>
     <h1 tabindex="9">For sur un tableau contenant une fonction</h1>
@@ -134,7 +134,7 @@
         <div>Résultat : </div>
         <div id="test8"></div>
         <script type="text/javascript">
-            document.getElementById("test8").innerHTML = tlite('{for tableau}{value}<br>{/for}', {tableau: [function(){return 'test'}, function(){return 2*3}]});
+            document.getElementById("test8").innerHTML = Tlite.parse('{for tableau}{value}<br>{/for}', {tableau: [function(){return 'test'}, function(){return 2*3}]});
         </script>
     </div>
     <h1 tabindex="10">For sur un tableau d'objet contenant une fonction</h1>
@@ -148,7 +148,7 @@
         <div>Résultat : </div>
         <div id="test9"></div>
         <script type="text/javascript">
-            document.getElementById("test9").innerHTML = tlite('{for tableau}{fonction}<br>{/for}', {tableau: [{fonction : function(){return 'test'}}, {fonction : function(){return 2*3}}]});
+            document.getElementById("test9").innerHTML = Tlite.parse('{for tableau}{fonction}<br>{/for}', {tableau: [{fonction : function(){return 'test'}}, {fonction : function(){return 2*3}}]});
         </script>
     </div>
     <h1 tabindex="11">For dans un For</h1>
@@ -162,7 +162,7 @@
         <div>Résultat : </div>
         <div id="test11"></div>
         <script type="text/javascript">
-            document.getElementById("test11").innerHTML = tlite(
+            document.getElementById("test11").innerHTML = Tlite.parse(
                     '<ul>{for tableau}<li>{key}<ul>{for value}<li>{key}:{value.name}</li>{/for}</ul></li>{/for}</ul>',
                     {tableau: { item1 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }, item2 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }, item3 : { sousitem1 : {name: 'test1'}, sousitem2 : {name: 'test2'}, sousitem3 : {name: 'test3'}, sousitem4 : {name: 'test4'} }}}
             );
@@ -179,7 +179,7 @@
         <div>Résultat : </div>
         <div id="test12"></div>
         <script type="text/javascript">
-            document.getElementById("test12").innerHTML = tlite(
+            document.getElementById("test12").innerHTML = Tlite.parse(
                     '<ul>{for tableau|elem2|elem4}<li>{key} : {value}</li>{/for}</ul>',
                     {tableau: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}
             );
@@ -196,9 +196,9 @@
         <div>Résultat : </div>
         <div id="test13"></div>
         <script type="text/javascript">
-            document.getElementById("test13").innerHTML = tlite(
-                    '{if test}{for elements|elem1}{key},{/for}{else}{for elements|elem1}{key},{/for}{/if} {truc}',
-                    {test: false, elements: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }, truc: 'muche'}
+            document.getElementById("test13").innerHTML = Tlite.parse(
+                    '{if test}{for elements|elem1}{key},{/for}{else}{for elements|elem1}{key},{/for}{/if}',
+                    {test: false, elements: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}
             );
         </script>
     </div>
