@@ -2,7 +2,7 @@
 //     (c) 2011 Jérémy Barbe.
 //     May be freely distributed under the MIT license.
 
-window['Tlite'] = new (function() {
+window['Tlite'] = new function() {
     var _this = this,
         topContext,
         curContext,
@@ -83,6 +83,7 @@ window['Tlite'] = new (function() {
 
                 result.value = forVar[i];
                 result.key = i;
+                result.top = topContext;
 
                 curContext = result;
                 forReturn += parse(content);
@@ -98,6 +99,7 @@ window['Tlite'] = new (function() {
      */
     function parse(tpl){
         var context = curContext;
+
         tpl.search('{if') < tpl.search('{for') ?
             tpl = parseFor(parseIf(tpl)) :
             tpl = parseIf(parseFor(tpl));
@@ -126,9 +128,8 @@ window['Tlite'] = new (function() {
      * @param {Object} context
      */
     _this.parse = function(tpl, context) {
-        topContext = topContext || context;
-        curContext = context;
+        curContext = topContext = context;
         
         return parse(tpl);
     }
-})();
+};

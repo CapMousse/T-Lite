@@ -64,6 +64,12 @@ Tlite.parse('{for loop}{key}:{value}<br>{/for}', {loop:['First', 'Second', 'Thir
 Tlite.parse('{for loop}{key}:{value}<br>{/for}', {loop:{name: 'Paul', age: 24, city: 'Paris'}});
 ```
 
+You can access to the top context with the `top` var :
+
+```javascript
+Tlite.parse('{for loop}{key}:{value}, {top.example}<br>{/for}', {loop:['First', 'Second', 'Third'], example: 'Try it!'});
+```
+
 ###### Filters
 Filters can remove one or multiple var from the current object. Each element you want to filter will be separated by a pipe:
 
@@ -79,6 +85,7 @@ Vars containin a function will receive a context argument, representing the curr
 
 #### 0.9
 * Expose API
+* Add top var to loops to access initial context
 * Improve compression
 
 #### 0.8
