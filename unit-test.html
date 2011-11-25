@@ -53,6 +53,20 @@
             document.getElementById("test2").innerHTML = Tlite.parse('{if result == 2}Test ok{/if}', {result: 2});
         </script>
     </div>
+    <h1 tabindex="14">If suivit d'un If</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{if result == 2}<br>Test ok<br>{/if}{if result == 3}<br>Test ok bis<br>{/if}</code>
+        <div>Object de test : </div>
+        <code>{result: 2}</code>
+        <div>Résultat attendut :</div>
+        <code>Test ok</code>
+        <div>Résultat : </div>
+        <div id="test14"></div>
+        <script type="text/javascript">
+            document.getElementById("test14").innerHTML = Tlite.parse('{if result == 2}Test ok{/if}{if result == 3}Test ok bis{/if}', {result: 2});
+        </script>
+    </div>
     <h1 tabindex="4">If avec fonction</h1>
     <div class="bloc">
         <div>Chaine de test : </div>

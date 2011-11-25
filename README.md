@@ -83,6 +83,10 @@ Vars containin a function will receive a context argument, representing the curr
 
 ## Versions
 
+#### 0.9.1
+* Fix condition/loop attached to other condition/loop not working
+
+
 #### 0.9
 * Expose API
 * Add top var to loops to access initial context

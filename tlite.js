@@ -29,8 +29,7 @@ window['Tlite'] = new function() {
      * @param {String} tpl
      */
     function parseIf(tpl) {
-        return tpl.replace(/\{if (.*?)\}(.*)\{\/if\}/, function(string, condition, result, elseResult, type) {
-
+        return tpl.replace(/\{if (.*?)\}(.*?)\{\/if\}/g, function(string, condition, result, elseResult, type) {
             elseResult = result.split(elseString);
 
             elseResult[1] ?
@@ -61,7 +60,7 @@ window['Tlite'] = new function() {
 
 
     function parseFor(tpl) {
-        return tpl.replace(/\{for (.*?)(\|(.*?))?\}(.+)\{\/for\}/, function(string, forVar, filterString, filter, tpl) {
+        return tpl.replace(/\{for (.*?)(\|(.*?))?\}(.+)\{\/for\}/g, function(string, forVar, filterString, filter, tpl) {
             return makeFor(findValue(forVar), filter, tpl);
         });
     }
