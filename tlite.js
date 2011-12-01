@@ -1,4 +1,4 @@
-//      Version : 0.9
+//      Version : 1.0.1
 //     (c) 2011 Jérémy Barbe.
 //     May be freely distributed under the MIT license.
 
@@ -14,14 +14,25 @@ window['Tlite'] = new function() {
      * @param {String} elem      the elemnt to search
      */
     function findValue(elem){
-        var path = elem.split('.'),
-            value = curContext[path.shift()];
+        var delimiter = '.',
+            path = elem.split(delimiter),
+            value = curContext[path.shift()],
+            call;
 
-        while (value != undefined && path.length) {
+        //don't loop if value is undefined or is a function
+        while (value != undefined && !(call = value.call) && path.length) {
             value = value[path.shift()];
         }
+        
+        //if the current value is function, call it and pass the current context and the left path
+        
+        if(call){
+            path = [curContext, findValue(path.join(delimiter))];
+            return value.apply(this, path)
+        }
 
-        return undefined == value ? elem : value.call ? value.call(this, curContext) : value;
+        //return original string if no value found
+        return value || elem;
     }
 
     /**
@@ -29,7 +40,7 @@ window['Tlite'] = new function() {
      * @param {String} tpl
      */
     function parseIf(tpl) {
-        return tpl.replace(/\{if (.*?)\}(.*?)\{\/if\}/g, function(string, condition, result, elseResult, type) {
+        return tpl.replace(/\{if (.*?)\}(.*?)\{\/if \1\}/g, function(string, condition, result, elseResult, type) {
             elseResult = result.split(elseString);
 
             elseResult[1] ?
@@ -74,7 +85,7 @@ window['Tlite'] = new function() {
     function makeFor(forVar, filterString, content) {
         var forReturn = '', i, result;
 
-        filterString = (filterString || '') + '|value|key';
+        filterString = (filterString || '') + '|value|key|top';
 
         for (i in forVar) {
             if (forVar.hasOwnProperty(i) && filterString.search(i) < 0) {
@@ -110,8 +121,8 @@ window['Tlite'] = new function() {
 
     /**
      * replace template var to their value
-    * @param {String} tpl
-    * @param {Object} context
+     * @param {String} tpl
+     * @param {Object} context
      */
     _this.find = function(tpl, context) {
         context&&(curContext = context)

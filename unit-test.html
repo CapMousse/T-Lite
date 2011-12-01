@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Test unitaire tlite.js</title>
-    <script type="text/javascript" src="tlite.js"></script>
+    <script type="text/javascript" src="tlite-min.js"></script>
     <meta charset="UTF-8">
     <style>
         .bloc{ display: none; }
@@ -42,7 +42,7 @@
     <h1 tabindex="3">If simple</h1>
     <div class="bloc">
         <div>Chaine de test : </div>
-        <code>{if result == 2}<br>Test ok<br>{/if}</code>
+        <code>{if result == 2}<br>Test ok<br>{/if result == 2}</code>
         <div>Object de test : </div>
         <code>{result: 2}</code>
         <div>Résultat attendut :</div>
@@ -50,13 +50,13 @@
         <div>Résultat : </div>
         <div id="test2"></div>
         <script type="text/javascript">
-            document.getElementById("test2").innerHTML = Tlite.parse('{if result == 2}Test ok{/if}', {result: 2});
+            document.getElementById("test2").innerHTML = Tlite.parse('{if result == 2}Test ok{/if result == 2}', {result: 2});
         </script>
     </div>
     <h1 tabindex="14">If suivit d'un If</h1>
     <div class="bloc">
         <div>Chaine de test : </div>
-        <code>{if result == 2}<br>Test ok<br>{/if}{if result == 3}<br>Test ok bis<br>{/if}</code>
+        <code>{if result == 2}<br>Test ok<br>{/if result == 2}{if result == 3}<br>Test ok bis<br>{/if result == 3}</code>
         <div>Object de test : </div>
         <code>{result: 2}</code>
         <div>Résultat attendut :</div>
@@ -64,13 +64,13 @@
         <div>Résultat : </div>
         <div id="test14"></div>
         <script type="text/javascript">
-            document.getElementById("test14").innerHTML = Tlite.parse('{if result == 2}Test ok{/if}{if result == 3}Test ok bis{/if}', {result: 2});
+            document.getElementById("test14").innerHTML = Tlite.parse('{if result == 2}Test ok{/if result == 2}{if result == 3}Test ok bis{/if result == 3}', {result: 2});
         </script>
     </div>
     <h1 tabindex="4">If avec fonction</h1>
     <div class="bloc">
         <div>Chaine de test : </div>
-        <code>{if callback == 2}<br>Test ok<br>{/if}</code>
+        <code>{if callback == 2}<br>Test ok<br>{/if callback == 2}</code>
         <div>Object de test : </div>
         <code>{result: function(){return 3}}</code>
         <div>Résultat attendut :</div>
@@ -78,13 +78,13 @@
         <div>Résultat : </div>
         <div id="test7"></div>
         <script type="text/javascript">
-            document.getElementById("test7").innerHTML = Tlite.parse('{if callback == 2}Test ok{/if}', {callback: function(){return 3}});
+            document.getElementById("test7").innerHTML = Tlite.parse('{if callback == 2}Test ok{/if callback == 2}', {callback: function(){return 3}});
         </script>
     </div>
     <h1 tabindex="5">Else simple</h1>
     <div class="bloc">
         <div>Chaine de test : </div>
-        <code>{if result == 2}<br>Test ok<br>{else}<br>Test non ok<br>{/if}</code>
+        <code>{if result == 2}<br>Test ok<br>{else}<br>Test non ok<br>{/if result == 2}</code>
         <div>Object de test : </div>
         <code>{result: 3}</code>
         <div>Résultat attendut :</div>
@@ -92,7 +92,7 @@
         <div>Résultat : </div>
         <div id="test5"></div>
         <script type="text/javascript">
-            document.getElementById("test5").innerHTML = Tlite.parse('{if result == 2}Test ok{else}Test non ok{/if}', {result: 3});
+            document.getElementById("test5").innerHTML = Tlite.parse('{if result == 2}Test ok{else}Test non ok{/if result == 2}', {result: 3});
         </script>
     </div>
     <h1 tabindex="6">For sur un tableau</h1>
@@ -202,7 +202,7 @@
     <h1 tabindex="13">For dans un Else</h1>
     <div class="bloc">
         <div>Chaine de test : </div>
-        <code>{if test}Nothing{else}{for elements|elem1}{key},{/for}{/else}</code>
+        <code>{if test}Nothing{else}{for elements|elem1}{key},{/for}{/if test}</code>
         <div>Object de test : </div>
         <code>{test: false, elements: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}</code>
         <div>Résultat attendut :</div>
@@ -211,8 +211,25 @@
         <div id="test13"></div>
         <script type="text/javascript">
             document.getElementById("test13").innerHTML = Tlite.parse(
-                    '{if test}{for elements|elem1}{key},{/for}{else}{for elements|elem1}{key},{/for}{/if}',
+                    '{if test}{for elements|elem1}{key},{/for}{else}{for elements|elem1}{key},{/for}{/if test}',
                     {test: false, elements: { elem1 : 'Contenu1', elem2 : 'Contenu2', elem3 : 'Contenu3', elem4 : 'Contenu4' }}
+            );
+        </script>
+    </div>
+    <h1 tabindex="15">Fonction avec argument</h1>
+    <div class="bloc">
+        <div>Chaine de test : </div>
+        <code>{fonction.argument}</code>
+        <div>Object de test : </div>
+        <code>{fonction: function(context, arg){ return arg+"!!!!!"; }, argument: 'test'}</code>
+        <div>Résultat attendut :</div>
+        <div>test!!!!!</div>
+        <div>Résultat : </div>
+        <div id="test15"></div>
+        <script type="text/javascript">
+            document.getElementById("test15").innerHTML = Tlite.parse(
+                    '{fonction.argument}',
+                    {fonction: function(context, arg){ return arg+"!!!!!"; }, argument: 'test'}
             );
         </script>
     </div>

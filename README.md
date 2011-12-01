@@ -28,16 +28,16 @@ Condition can check if a var exists on the object, check the equality... Like va
 #####Simple if
 
 ```javascript
-Tlite.parse('{if name}Hello {name}{/if}', { name: 'Mousse' });
+Tlite.parse('{if name}Hello {name}{/if name}', { name: 'Mousse' });
 ```
 
 #####Simple if/else
 
 ```javascript
 // boolean var
-Tlite.parse('{if name}Hello {name} !{else}Hello unknown !{/if}', { name: false });
+Tlite.parse('{if name}Hello {name} !{else}Hello unknown !{/if name}', { name: false });
 // function var
-Tlite.parse('{if name}Hello {name} !{else}Hello unknown !{/if}', { name: function(){ return 'James' });
+Tlite.parse('{if name}Hello {name} !{else}Hello unknown !{/if name}', { name: function(){ return 'James' });
 ```
 
 ##### Complex if/else
@@ -47,13 +47,13 @@ Complex if/else can use comparison char in this list : `===, ==, !=, <=, >=`.
 
 ```javascript
 // simple var
-Tlite.parse('{if age != 60 }Hello {name} !{else}Hello old men !{/if}', { name: 'James', age : 21});
-Tlite.parse('{if age != medium }Hello {name} !{else}Hello old men !{/if}', { name: 'James', age : 21, medium : 60});
+Tlite.parse('{if age != 60 }Hello {name} !{else}Hello old men !{/if age != 60}', { name: 'James', age : 21});
+Tlite.parse('{if age != medium }Hello {name} !{else}Hello old men !{/if age != medium}', { name: 'James', age : 21, medium : 60});
 ```
 
 ```javascript
 //function var
-Tlite.parse('{if age != 60 }Hello {name} !{else}Hello old men !{/if}', { name: 'James', age : function(){ return this.person.age; }});
+Tlite.parse('{if age != 60 }Hello {name} !{else}Hello old men !{/if age != 60}', { name: 'James', age : function(){ return this.person.age; }});
 ```
 
 ### For
@@ -81,7 +81,17 @@ Tlite.parse('{for loop|not|that}{key}:{value}<br>{/for}', {loop:{name: 'Paul', a
 
 Vars containin a function will receive a context argument, representing the current level of parsed element. In a for, you can access to the *key* and *value* vars.
 
+You can pass *arguments* to your function. It can be a string (for i18n services) or a other compiled var.
+
+```javascript
+Tlite.parse('{aFunction.aVar}', {aFunction: function(context, argument){ console.log(argument); return "Hey!" }, aVar: "A CAPITALIZED VAR" }));
+``
+
 ## Versions
+
+#### 1.0.1
+* Change parsing method for if to prevent infinite loops. See doc
+* Can pass arguments to function
 
 #### 0.9.1
 * Fix condition/loop attached to other condition/loop not working

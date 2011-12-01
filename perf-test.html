@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Test unitaire Tlite.js</title>
-    <script type="text/javascript" src="Tlite.js"></script>
+    <script type="text/javascript" src="tlite-min.js"></script>
     <meta charset="UTF-8">
     <style>
         /*.bloc{ display: none; }*/
@@ -54,7 +54,7 @@
         <script type="text/javascript">
             var start = +new Date();
             for(var i = 0; i < 1000; i++){
-                Tlite.parse('{if test}test{else}pas test{/if}', {test: function(){return i%2} })
+                Tlite.parse('{if test}test{else}pas test{/if test}', {test: function(){return i%2} })
             }
             document.getElementById("time3").innerHTML = (+new Date() - start) + "ms";
         </script>
