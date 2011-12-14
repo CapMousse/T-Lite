@@ -6,14 +6,14 @@ window['Tlite'] = new function() {
     var _this = this,
         topContext,
         curContext,
-        elseString = "{else}",
         ifCache = {};
 
     /**
      * Find the value asked in the template in the current context
-     * @param {String} elem      the elemnt to search
+     * @param {String} elem      the element to search
      */
     function findValue(elem){
+
         var delimiter = '.',
             path = elem.split(delimiter),
             value = curContext[path.shift()],
@@ -31,61 +31,47 @@ window['Tlite'] = new function() {
             return value.apply(this, path)
         }
 
-        //return original string if no value found
-        return value || elem;
+        return value;
     }
 
     /**
-     * Parse current string  to find If/Else
-     * @param {String} tpl
+     * Parse condition
+     * @param {String} condition
+     * @param {String} result
      */
-    function parseIf(tpl) {
-        return tpl.replace(/\{if (.*?)\}(.*?)\{\/if \1\}/g, function(string, condition, result, elseResult, type) {
-            elseResult = result.split(elseString);
+    function parseIf(condition, result) {
+        var type;
 
-            elseResult[1] ?
-                (elseResult = elseResult.pop(),result = result.split(elseString + elseResult)[0]) :
-                elseResult = 0;
+        condition = condition.split(' ');
+        type = ""+condition[1];
 
-            // else, it's a complex condition, need to parse first and last element
-            condition = condition.split(' ');
-            type = ""+condition[1];
+        if (condition[1] && !ifCache[type]) {
+            ifCache[type] = new Function("x", "y", "return x " + condition[1] + " y");
+        }
 
-            if (condition[1] && !ifCache[type]) {
-                ifCache[type] = buildCondition("return x " + condition[1] + " y");
-            }
+        if(condition[1]){
+            type = ifCache[type](findValue(condition[0]), findValue(condition[2]))
+        }else{
+            type = condition[0][0] != "!";
+            condition[0] = type ? condition[0] : condition[0].substr(1);
+            type = !!findValue(condition[0]) == type; //convert findValue to boolean
+        }
 
-            type = condition[1] ? ifCache[type](findValue(condition[0]), findValue(condition[2])) : findValue(condition[0]);
-
-            return type ? parse(result) : (elseResult ? parse(elseResult) : '')
-        });
+        return type ? parse(result) : '';
     }
-
-    /**
-     * Create a function to compare to args
-     * @param {String|null} content content of the function
-     */
-    function buildCondition(content) {
-        return new Function("x", "y", content);
-    }
-
-
-    function parseFor(tpl) {
-        return tpl.replace(/\{for (.*?)(\|(.*?))?\}(.+)\{\/for\}/g, function(string, forVar, filterString, filter, tpl) {
-            return makeFor(findValue(forVar), filter, tpl);
-        });
-    }
-
+    
     /**
      * Do a for loop
      * @param {Array|Object} forVar        the var used for the loop
-     * @param {String|null} filterString  the var in the loop filtered at render
      * @param {String} content       content of the loop
      */
-    function makeFor(forVar, filterString, content) {
-        var forReturn = '', i, result;
+    function parseFor(forVar, content) {
+        var filterString, forReturn = '', i, result;
 
-        filterString = (filterString || '') + '|value|key|top';
+        filterString = forVar.match(/(\w+)(?:(.*))/);
+        forVar = findValue(filterString[1]);
+
+        filterString = (filterString[2] || '') + '|value|key|top';
 
         for (i in forVar) {
             if (forVar.hasOwnProperty(i) && filterString.search(i) < 0) {
@@ -110,9 +96,9 @@ window['Tlite'] = new function() {
     function parse(tpl){
         var context = curContext;
 
-        tpl.search('{if') < tpl.search('{for') ?
-            tpl = parseFor(parseIf(tpl)) :
-            tpl = parseIf(parseFor(tpl));
+        tpl = tpl.replace(/<tpl id:(.*) (.*?):(.*?)>(.*?)<\/tpl id:\1>/g, function(string, id, type, value, content){
+            return type == 'if' ? parseIf(value, content): parseFor(value, content);
+        });
 
         //reset current context
         curContext = context;
@@ -128,7 +114,7 @@ window['Tlite'] = new function() {
         context&&(curContext = context)
         
         return tpl.replace(/\{(.+?)\}/g, function(foundVar, varContent) {
-            return findValue(varContent);
+            return findValue(varContent) || foundVar;
         });
     }
 

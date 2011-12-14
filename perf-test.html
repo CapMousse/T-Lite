@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Test unitaire Tlite.js</title>
-    <script type="text/javascript" src="tlite-min.js"></script>
+    <script type="text/javascript" src="tlite.js"></script>
     <meta charset="UTF-8">
     <style>
         /*.bloc{ display: none; }*/
@@ -14,7 +14,7 @@
     <h1>1000 Tlite simple</h1>
     <div class="bloc">
         <div>Chaine de test : </div>
-        <code>Ceci est une phrase parsé par Tlite version {version}</code>
+        <code>Ceci est une phrase parsé par Tlite version <=version></code>
         <div>Object de test : </div>
         <code>{version: 0.1}</code>
         <div>Temps de parsing :</div>
@@ -22,7 +22,7 @@
         <script type="text/javascript">
             var start = +new Date();
             for(var i = 0; i < 1000; i++){
-                Tlite.find('Ceci est une phrase parsé par Tlite version {version}', {version: 0.1})
+                Tlite.find('Ceci est une phrase parsé par Tlite version <=version>', {version: 0.1})
             }
             document.getElementById("time1").innerHTML = (+new Date() - start) + "ms";
         </script>

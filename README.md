@@ -28,40 +28,35 @@ Condition can check if a var exists on the object, check the equality... Like va
 #####Simple if
 
 ```javascript
-Tlite.parse('{if name}Hello {name}{/if name}', { name: 'Mousse' });
+Tlite.parse('<tpl id:1 if:name>Hello {name}</tpl id:1>', { name: 'Mousse' });
+// boolean var with 'pseudo' else
+Tlite.parse('<tpl id:1 if:name>Hello {name} !</tpl id:1><tpl id:2 if:!name>Hello unknown !</tpl id:2>', { name: false });
+// function var </tpl id:2>
+Tlite.parse('<tpl id:1 if:name>Hello {name} !</tpl id:1><tpl id:2 if:!name>Hello unknown !</tpl id:2>', { name: function(){ return 'James' });
 ```
 
-#####Simple if/else
+##### Complex if
 
-```javascript
-// boolean var
-Tlite.parse('{if name}Hello {name} !{else}Hello unknown !{/if name}', { name: false });
-// function var
-Tlite.parse('{if name}Hello {name} !{else}Hello unknown !{/if name}', { name: function(){ return 'James' });
-```
-
-##### Complex if/else
-
-Complex if/else can use comparison char in this list : `===, ==, !=, <=, >=`.
+Complex if can use comparison char in this list : `===, ==, !=, <=, >=`.
 **spaces are obligatory in your if tempalte ! Condition without space will not work !**
 
 ```javascript
 // simple var
-Tlite.parse('{if age != 60 }Hello {name} !{else}Hello old men !{/if age != 60}', { name: 'James', age : 21});
-Tlite.parse('{if age != medium }Hello {name} !{else}Hello old men !{/if age != medium}', { name: 'James', age : 21, medium : 60});
+Tlite.parse('<tpl id:1 if:age <= 60>Hello {name} !</tpl id:1><tpl id:2 if:age >= 60>Hello old men !</tpl id:2>', { name: 'James', age : 21});
+Tlite.parse('<tpl id:1 if:age <= medium>Hello {name} !</tpl id:1><tpl id:2 if:age >= medium>Hello old men !</tpl id:2>', { name: 'James', age : 21, medium : 60});
 ```
 
 ```javascript
 //function var
-Tlite.parse('{if age != 60 }Hello {name} !{else}Hello old men !{/if age != 60}', { name: 'James', age : function(){ return this.person.age; }});
+Tlite.parse('<tpl id:1 if:age <= 60>Hello {name} !</tpl id:1><tpl id:2 if:age >= 60>Hello old men !</tpl id:2>', { name: 'James', age : function(){ return this.person.age; }});
 ```
 
 ### For
 For automatically made a loop thought a given array/object. For give a key and value var to simply use result :
 
 ```javascript
-Tlite.parse('{for loop}{key}:{value}<br>{/for}', {loop:['First', 'Second', 'Third']});
-Tlite.parse('{for loop}{key}:{value}<br>{/for}', {loop:{name: 'Paul', age: 24, city: 'Paris'}});
+Tlite.parse('<tpl id:1 for:loop>{key}:{value}<br></tpl id:1>', {loop:['First', 'Second', 'Third']});
+Tlite.parse('<tpl id:1 for:loop>{key}:{value}<br></tpl>', {loop:{name: 'Paul', age: 24, city: 'Paris'}});
 ```
 
 You can access to the top context with the `top` var :
@@ -88,6 +83,12 @@ Tlite.parse('{aFunction.aVar}', {aFunction: function(context, argument){ console
 ``
 
 ## Versions
+
+#### 2.0.0
+* Drop mustache syntax to a more redable sintax
+* Lightup the code
+* Drop else (because parsing LEVEL3 element with LEVEL2 match is not efficient and can make errors)
+
 
 #### 1.0.1
 * Change parsing method for if to prevent infinite loops. See doc
