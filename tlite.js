@@ -96,7 +96,7 @@ window['Tlite'] = new function() {
     function parse(tpl){
         var context = curContext;
 
-        tpl = tpl.replace(/<tpl id:(.*) (.*?):(.*?)>(.*?)<\/tpl id:\1>/g, function(string, id, type, value, content){
+        tpl = tpl.replace(/<tpl id:(.*) (.*?):(.*?)>([\s\S]*?)<\/tpl id:\1>/g, function(string, id, type, value, content){
             return type == 'if' ? parseIf(value, content): parseFor(value, content);
         });
 
