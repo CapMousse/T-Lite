@@ -14,10 +14,10 @@ window['Tlite'] = new function() {
      */
     function findValue(elem){
 
-        var delimiter = '.',
-            path = elem.split(delimiter),
-            value = curContext[path.shift()],
-            call;
+        var delimiter = '.';
+        var path = elem.split(delimiter);
+        var value = curContext[path.shift()];
+        var call;
 
         //don't loop if value is undefined or is a function
         while (value != undefined && !(call = value.call) && path.length) {
@@ -96,7 +96,7 @@ window['Tlite'] = new function() {
     function parse(tpl){
         var context = curContext;
 
-        tpl = tpl.replace(/<tpl id:(.*) (.*?):(.*?)>(.*?)<\/tpl id:\1>/g, function(string, id, type, value, content){
+        tpl = tpl.replace(/<tpl id:(.*) (.*?):(.*?)>([\s\S]*?)<\/tpl id:\1>/g, function(string, id, type, value, content){
             return type == 'if' ? parseIf(value, content): parseFor(value, content);
         });
 
