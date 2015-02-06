@@ -14,9 +14,9 @@ window['Tlite'] = new function() {
      */
     function findValue(elem){
 
-        var delimiter = '.',
-        var path = elem.split(delimiter),
-        var value = curContext[path.shift()],
+        var delimiter = '.';
+        var path = elem.split(delimiter);
+        var value = curContext[path.shift()];
         var call;
 
         //don't loop if value is undefined or is a function
