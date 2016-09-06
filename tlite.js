@@ -97,6 +97,7 @@ window['Tlite'] = new function() {
         var context = curContext;
 
         tpl = tpl.replace(/<tpl id:(.*) (.*?):(.*?)>(.*?)<\/tpl id:\1>/g, function(string, id, type, value, content){
+            curContext = context;
             return type == 'if' ? parseIf(value, content): parseFor(value, content);
         });
 
