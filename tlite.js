@@ -115,7 +115,8 @@ window['Tlite'] = new function() {
         context&&(curContext = context)
         
         return tpl.replace(/\{(.+?)\}/g, function(foundVar, varContent) {
-            return findValue(varContent) || foundVar;
+            var foundVal = findValue(varContent);
+            return (typeof foundVal == 'undefined') ? foundVar : foundVal;
         });
     }
 
